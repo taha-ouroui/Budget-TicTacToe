@@ -1,0 +1,220 @@
+body {
+    margin: 2vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 2vh;
+    height: 100vh;
+    background-color: #222;
+}
+
+@font-face {
+    font-family: Pixel;
+    src: url(assets/font/Retro\ Gaming.ttf);
+}
+
+#grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    width: 60vmin;
+    height: 60vmin;
+    gap: 5px;
+}
+
+.grid-cell {
+    background: #3498db;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    font-family: 'Pixel', 'Courier New', Courier, monospace;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    position: relative;
+}
+
+.grid-cell:hover {
+    background: #5dade2;
+}
+
+.cell-x::before,
+.cell-o::before {
+    animation: pop 0.3s ease-out;
+    display: inline-block;
+}
+
+.cell-x::before {
+    content: "X";
+    color: #ff7675;
+    font-size: larger;
+}
+
+.cell-o::before {
+    content: "O";
+    color: #55efc4;
+    font-size: larger;
+}
+
+@keyframes pop {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.info-board {
+    width: 90vmin;
+    height: 8vh;
+    background-color: rgba(100, 100, 100, 0.8);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.info-board img {
+    height: 80%;
+    aspect-ratio: 1;
+    image-rendering: pixelated;
+}
+
+.info-board p, .info-board span {
+    font-family: 'Pixel', 'Courier New', Courier, monospace;
+    color: white;
+    font-size: 1.5rem;
+    margin: 0;
+    flex-grow: 1;
+}
+
+.info-board button, .info-board select {
+    background-color: grey;
+    font-family: 'Pixel', 'Courier New', Courier, monospace;
+    color: white;
+    font-size: 1rem;
+    padding: 0.3rem 0.6rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+select option {
+    font-family: 'Pixel', 'Courier New', Courier, monospace;
+}
+
+.score-container {
+    display: flex;
+    gap: 1rem;
+}
+
+.score-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.label {
+    font-family: 'Pixel', 'Courier New', Courier, monospace;
+    color: white;
+    font-size: 1rem;
+    margin-bottom: 0.2rem;
+}
+
+#winstreak {
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.footer {
+    width: 90vmin;
+    font-family: 'Pixel', 'Courier New', Courier, monospace;
+    color: white;
+    font-size: 1rem;
+    text-align: center;
+}
+
+.shake {
+    animation: shake 0.5s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes shake {
+    0% {
+        transform: translate(1px, 1px) rotate(0deg);
+    }
+
+    10% {
+        transform: translate(-1px, -2px) rotate(-1deg);
+    }
+
+    20% {
+        transform: translate(-3px, 0px) rotate(1deg);
+    }
+
+    30% {
+        transform: translate(3px, 2px) rotate(0deg);
+    }
+
+    40% {
+        transform: translate(1px, -1px) rotate(1deg);
+    }
+
+    50% {
+        transform: translate(-1px, 2px) rotate(-1deg);
+    }
+
+    60% {
+        transform: translate(-3px, 1px) rotate(0deg);
+    }
+
+    70% {
+        transform: translate(3px, 1px) rotate(-1deg);
+    }
+
+    80% {
+        transform: translate(-1px, -1px) rotate(1deg);
+    }
+
+    90% {
+        transform: translate(1px, 2px) rotate(0deg);
+    }
+
+    100% {
+        transform: translate(1px, -2px) rotate(-1deg);
+    }
+}
+
+.prevent-select {
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+
+.revealed {
+    background: grey !important;
+}
+
+.winning-cell-x {
+    background-color: #ca5c5c !important;
+    animation: flash 0.5s ease-in-out infinite alternate;
+}
+
+.winning-cell-o {
+    background-color: #38997d !important;
+    animation: flash 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes flash {
+    0% { transform: scale(1); }
+    100% { transform: scale(0.95); }
+}

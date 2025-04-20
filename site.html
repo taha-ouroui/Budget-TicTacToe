@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="assets/image/tttlogo.png">
+</head>
+<body>
+    <div class="info-board">
+        <img src="assets/image/tttlogo.png" alt="tic-tac-toe">
+        
+        <p id="turn-indicator">Your Turn</p>
+        
+        <select id="difficulty">
+            <option value="easy">Easy</option>
+            <option value="normal">Normal</option>
+            <option value="hard">Hard</option>
+            <option value="1v1">1v1</option>
+        </select>
+
+        <div class="score-container">
+            <div class="score-item">
+                <p class="label">Win Streak</p>
+                <p id="winstreak">0</p>
+            </div>
+        </div>
+
+        <button id="refresh-btn">Restart</button>
+    </div>
+
+    <div id="grid-container"></div>
+
+    <div class="footer">
+        <h1>Budget Tic Tac Toe (v0.1)</h1>
+        <p>Programming: Taha Ouroui</p>
+        <p>Font: DaFont</p>
+    </div>
+
+    <script src="game.js" type="module"></script>
+    <script src="t3bot.js" type="module"></script>
+</body>
+</html>
