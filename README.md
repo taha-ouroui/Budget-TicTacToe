@@ -1,2 +1,5 @@
-# Budget-TicTacToe
-A random tic tac toe game made with JavaScript for absoultely no reason whatsoever.
+# TicTacToe-JavaScript
+a Budget-friendly Tic Tac Toe game made using JavaScript.
+
+- Programming: Taha Ouroui
+- Font: DaFont
