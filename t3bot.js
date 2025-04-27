@@ -4,22 +4,33 @@ class t3brain
 {
     static difficulty;
 
-    static Play(grid)
+    static Play(grid, isArcadeMode = false, playedCellsX = [], playedCellsO = [])
     {
         let cellToPlay;
+        let gridCopy = grid.slice();
+
+        if (isArcadeMode)
+        {
+            if (playedCellsO.length === 3)
+            {
+                const oldestBotCell = playedCellsO[0];
+                gridCopy[oldestBotCell.id].is_o = false;
+                gridCopy[oldestBotCell.id].is_revealed = false;
+            }
+        }
 
         switch(this.difficulty)
         {
             case "easy":
-                cellToPlay = this.MakeMove_Easy(grid);
+                cellToPlay = this.MakeMove_Easy(gridCopy);
                 break;
 
             case "normal":
-                cellToPlay = this.MakeMove_Normal(grid);
+                cellToPlay = this.MakeMove_Normal(gridCopy);
                 break;
 
             case "hard":
-                cellToPlay = this.MakeMove_Hard(grid);
+                cellToPlay = this.MakeMove_Hard(gridCopy);
                 break;
         }
 
@@ -40,7 +51,7 @@ class t3brain
     {
         let emptyCells = grid.filter(cellInfo => !cellInfo.is_revealed);
 
-        // 1. check if the bot is able to win firstly
+        // 1. check if the bot is able to win
         for (const cell of emptyCells)
         {
             const simulatedGrid = grid.map(c => ({ ...c }));
