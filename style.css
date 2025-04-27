@@ -47,6 +47,12 @@ body {
     display: inline-block;
 }
 
+.cell-x::after,
+.cell-o::after {
+    animation: pop 0.3s ease-out;
+    display: inline-block;
+}
+
 .cell-x::before {
     content: "X";
     color: #ff7675;
@@ -71,7 +77,7 @@ body {
 }
 
 .info-board {
-    width: 90vmin;
+    width: 120vmin;
     height: 8vh;
     background-color: rgba(100, 100, 100, 0.8);
     border-radius: 3px;
@@ -212,6 +218,11 @@ select option {
 .winning-cell-o {
     background-color: #38997d !important;
     animation: flash 0.5s ease-in-out infinite alternate;
+}
+
+.aboutToBeReverted {
+    border: 2px dashed #b0b0b0;
+    animation: flash 0.8s ease-in-out infinite alternate !important;
 }
 
 @keyframes flash {
