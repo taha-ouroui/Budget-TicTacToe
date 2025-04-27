@@ -3,6 +3,7 @@
 const DEBUG_MODE = false;
 const WINSTREAK_KEY = "tictactoe-winstreak";
 const DIFFICULTY_KEY = "tictactoe-difficulty";
+const ARCADE_KEY = "tictactoe-arcade";
 
 const GRID = document.getElementById("grid-container");
 const sfx = 
@@ -19,18 +20,23 @@ const difficultySelection = document.getElementById("difficulty");
 const refreshButton = document.getElementById("refresh-btn");
 const turnIndicator = document.getElementById("turn-indicator");
 const winStreakLabel = document.getElementById("winstreak");
+const arcadeModeCheck = document.getElementById("arcade-mode");
 
 // VARS
 let GameGrid = [];
 let playerTurn = true;
 let winner = "";
 
+let isArcade = false;
+let playedCellsX = [];
+let playedCellsO = [];
+
 function OnStart()
 {
+    // LOADING THE GAME
     LoadDifficulty();
+    LoadArcadeMode();
     LoadTicTacToe();
-
-    turnIndicator.textContent = "Your Turn";
 
     let winstreak = localStorage.getItem(WINSTREAK_KEY);
 
@@ -45,6 +51,33 @@ function OnStart()
         localStorage.setItem(DIFFICULTY_KEY, selectedDifficulty);
         window.location.reload();
     });
+
+    arcadeModeCheck.addEventListener("change", (event) =>
+    {
+        const selectedArcadeChoice = event.target.value;
+        localStorage.setItem(ARCADE_KEY, selectedArcadeChoice);
+        window.location.reload();
+    });
+
+    // STARTING GAME
+    if (t3brain.difficulty === "1v1")
+    {
+        turnIndicator.textContent = "X's Turn";
+    }
+    else
+    {
+        let playerGetsToStart = Math.random() > 0.4;
+
+        if (playerGetsToStart)
+            turnIndicator.textContent = "Your Turn";
+        else
+        {
+            turnIndicator.textContent = "Bot's Turn";
+            ContinueGame();
+        }
+
+        playerTurn = playerGetsToStart;
+    }
 }
 
 function LoadDifficulty()
@@ -57,6 +90,18 @@ function LoadDifficulty()
     difficultySelection.value = currDifficulty;
 
     t3brain.difficulty = difficulty.value;
+}
+
+function LoadArcadeMode()
+{
+    let currArcadeModeChoice = localStorage.getItem(ARCADE_KEY);
+
+    if (!currArcadeModeChoice) 
+        currArcadeModeChoice = false;
+
+    arcadeModeCheck.value = currArcadeModeChoice;
+
+    isArcade = currArcadeModeChoice;
 }
 
 function LoadTicTacToe()
@@ -90,9 +135,11 @@ function TriggerCellByPlayer(cellInfo)
 
 function TriggerCell(cellInfo)
 {
-    if (cellInfo.is_revealed) return;
+    if (cellInfo.is_revealed && !cellInfo.cell.classList.contains("aboutToBeReverted")) return;
 
     PlaySFX("turn");
+
+    HandleArcade(cellInfo);
 
     cellInfo.is_revealed = true;
     cellInfo.cell.removeEventListener("click", cellInfo.clickEvent);
@@ -112,9 +159,68 @@ function TriggerCell(cellInfo)
     ContinueGame();
 }
 
+function HandleArcade(cellInfo)
+{
+    if (isArcade)
+    {
+        if (playerTurn) 
+        {
+            if (playedCellsX.length === 3)
+            {
+                RevertOldestPlayedCell(playedCellsX);
+            }
+    
+            if (playedCellsO.length === 3)
+            {
+                MarkOldestCellAboutToReset(playedCellsO);
+            }
+    
+            playedCellsX.push(cellInfo);
+        }
+        else
+        {
+            if (playedCellsO.length === 3)
+            {
+                RevertOldestPlayedCell(playedCellsO);
+            }
+    
+            if (playedCellsX.length === 3)
+            {
+                MarkOldestCellAboutToReset(playedCellsX);
+            }
+    
+            playedCellsO.push(cellInfo);
+        }
+    }
+}
+
+function MarkOldestCellAboutToReset(cellsArray) 
+{
+    GameGrid.forEach(cellInfo => cellInfo.cell.classList.remove("aboutToBeReverted"));
+
+    if (cellsArray.length > 0) 
+    {
+        const oldestCell = cellsArray[0];
+        oldestCell.cell.classList.add("aboutToBeReverted");
+    }
+}
+
+function RevertOldestPlayedCell(cellsArray)
+{
+    const oldestCell = cellsArray.shift();
+
+    oldestCell.cell.classList.remove("revealed", "cell-x", "cell-o", "aboutToBeReverted");
+    oldestCell.is_x = false;
+    oldestCell.is_o = false;
+    oldestCell.is_revealed = false;
+
+    oldestCell.clickEvent = oldestCell.cell.addEventListener("click", () => TriggerCellByPlayer(oldestCell));
+}
+
 function FlashWinningCells(pattern)
 {
     let suffix = winner === "Player" ? "-x" : "-o";
+    GameGrid.forEach(cellInfo => cellInfo.cell.classList.remove("aboutToBeReverted"));
     pattern.forEach(i => GameGrid[i].cell.classList.add("winning-cell" + suffix));
 }
 
@@ -232,13 +338,14 @@ function ContinueGame()
             {
                 turnIndicator.textContent = "Bot's Turn";
 
-                let cellToPlay = t3brain.Play(GameGrid);
+                let cellToPlay = t3brain.Play(GameGrid, isArcade, playedCellsX, playedCellsO);
                 if (!cellToPlay)
                 {
                     Log("ERROR: BOT DID NOT FIND A CELL TO PLAY???");
                 }
                 else
                 {
+                    Log("BOT: Playing " + cellToPlay.id);
                     setTimeout(() => 
                     {
                         TriggerCell(cellToPlay);
