@@ -99,8 +99,10 @@ function LoadArcadeMode()
 
     if (!currArcadeModeChoice || currArcadeModeChoice === "false")
         currArcadeModeChoice = false;
+    else
+        currArcadeModeChoice = true;
 
-    arcadeModeCheck.value = currArcadeModeChoice;
+    arcadeModeCheck.checked = currArcadeModeChoice;
 
     isArcade = currArcadeModeChoice;
 }
@@ -136,8 +138,7 @@ function TriggerCellByPlayer(cellInfo)
 
 function TriggerCell(cellInfo)
 {
-    if (isGameOver) return;
-    if (cellInfo.is_revealed && !cellInfo.cell.classList.contains("aboutToBeReverted")) return;
+    if (cellInfo.is_revealed || isGameOver) return;
 
     PlaySFX("turn");
 
@@ -340,7 +341,7 @@ function ContinueGame()
             {
                 turnIndicator.textContent = "Bot's Turn";
 
-                let cellToPlay = t3brain.Play(GameGrid, isArcade, playedCellsX, playedCellsO);
+                let cellToPlay = t3brain.Play(GameGrid);
                 if (!cellToPlay)
                 {
                     Log("ERROR: BOT DID NOT FIND A CELL TO PLAY???");
