@@ -4,33 +4,22 @@ class t3brain
 {
     static difficulty;
 
-    static Play(grid, isArcadeMode = false, playedCellsX = [], playedCellsO = [])
+    static Play(grid)
     {
         let cellToPlay;
-        let gridCopy = grid.slice();
-
-        if (isArcadeMode)
-        {
-            if (playedCellsO.length === 3)
-            {
-                const oldestBotCell = playedCellsO[0];
-                gridCopy[oldestBotCell.id].is_o = false;
-                gridCopy[oldestBotCell.id].is_revealed = false;
-            }
-        }
 
         switch(this.difficulty)
         {
             case "easy":
-                cellToPlay = this.MakeMove_Easy(gridCopy);
+                cellToPlay = this.MakeMove_Easy(grid);
                 break;
 
             case "normal":
-                cellToPlay = this.MakeMove_Normal(gridCopy);
+                cellToPlay = this.MakeMove_Normal(grid);
                 break;
 
             case "hard":
-                cellToPlay = this.MakeMove_Hard(gridCopy);
+                cellToPlay = this.MakeMove_Hard(grid);
                 break;
         }
 
