@@ -25,6 +25,7 @@ const arcadeModeCheck = document.getElementById("arcade-mode");
 // VARS
 let GameGrid = [];
 let playerTurn = true;
+let isGameOver = false;
 let winner = "";
 
 let isArcade = false;
@@ -54,8 +55,8 @@ function OnStart()
 
     arcadeModeCheck.addEventListener("change", (event) =>
     {
-        const selectedArcadeChoice = event.target.value;
-        localStorage.setItem(ARCADE_KEY, selectedArcadeChoice);
+        const selectedArcadeChoice = event.target.checked;
+        localStorage.setItem(ARCADE_KEY, selectedArcadeChoice.toString());
         window.location.reload();
     });
 
@@ -96,7 +97,7 @@ function LoadArcadeMode()
 {
     let currArcadeModeChoice = localStorage.getItem(ARCADE_KEY);
 
-    if (!currArcadeModeChoice) 
+    if (!currArcadeModeChoice || currArcadeModeChoice === "false")
         currArcadeModeChoice = false;
 
     arcadeModeCheck.value = currArcadeModeChoice;
@@ -135,6 +136,7 @@ function TriggerCellByPlayer(cellInfo)
 
 function TriggerCell(cellInfo)
 {
+    if (isGameOver) return;
     if (cellInfo.is_revealed && !cellInfo.cell.classList.contains("aboutToBeReverted")) return;
 
     PlaySFX("turn");
@@ -254,7 +256,7 @@ function CheckWinCondition()
 
 function ContinueGame()
 {
-    let isGameOver = CheckWinCondition();
+    isGameOver = CheckWinCondition();
     
     if (isGameOver)
     {
